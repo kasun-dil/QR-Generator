@@ -4,7 +4,7 @@ A simple and user-friendly web application that generates QR codes from text or 
 
 ## Features
 
-- Generate QR codes for URLs.
+- Generate QR codes for URLs and TEXT.
 - Real-time QR code preview.
 - Download generated QR code as an image.
 - Clean and responsive user interface.
@@ -24,7 +24,7 @@ Check out the live demo here:
 ## How to Use
 
 1. Open the website.
-2. Enter the URL you want to convert to a QR code.
+2. Enter the URL and TEXT you want to convert to a QR code.
 3. The QR code will be generated instantly.
 4. Download or scan the QR code.
 
