@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart QR Code Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="https://png.pngtree.com/element_our/20190528/ourmid/pngtree-cartoon-flat-qr-code-sweeping-decoration-image_1137228.jpg" rel="icon">
+
+  <!-- Bootstrap CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <h1>Smart QR Code Generator</h1>
+    <p class="mb-0">Turn any link into a shareable QR code instantly</p>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container my-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-6 col-md-8 col-sm-10">
+        <div class="card bg-white">
+
+          <div class="mb-3">
+            <input type="text" id="linkInput" class="form-control" placeholder="Enter your URL here">
+          </div>
+
+          <div class="d-grid gap-2">
+            <button onclick="generateQR()" class="btn btn-primary">Generate QR Code</button>
+          </div>
+
+          <div class="d-flex justify-content-center mt-4" id="qrcode"></div>
+
+         
+          <div class="d-grid gap-2">
+            <button id="downloadBtn" class="btn btn-success mt-3" style="display:none;">Download QR Code</button>
+          </div>
+
+          <hr class="my-4">
+
+          <h5 class="text-center mb-3">🕘 Recently Used Links</h5>
+          <ul id="historyList" class="list-unstyled text-center"></ul>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Smart QR Generator | THE TWO ZERO CODES </p>
+  </footer>
+
+  <!-- QR Code JS -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+  <script>
+    let qrcode = null;
+
+    function generateQR() {
+      const link = document.getElementById("linkInput").value.trim();
+      if (!link) {
+        alert("Please enter a valid URL.");
+        return;
+      }
+
+      document.getElementById("qrcode").innerHTML = "";
+
+      qrcode = new QRCode(document.getElementById("qrcode"), {
+        text: link,
+        width: 200,
+        height: 200
+      });
+
+      setTimeout(() => {
+        document.getElementById("downloadBtn").style.display = "inline-block";
+      }, 500);
+
+      saveToHistory(link);
+      displayHistory();
+    }
+
+    function saveToHistory(link) {
+      let history = JSON.parse(localStorage.getItem("qrHistory")) || [];
+      if (!history.includes(link)) {
+        history.unshift(link);
+        localStorage.setItem("qrHistory", JSON.stringify(history.slice(0, 10)));
+      }
+    }
+
+    function displayHistory() {
+      const historyList = document.getElementById("historyList");
+      historyList.innerHTML = "";
+      const history = JSON.parse(localStorage.getItem("qrHistory")) || [];
+      history.forEach(url => {
+        const li = document.createElement("li");
+        li.className = "history-item";
+        li.innerText = url;
+        li.onclick = () => {
+          document.getElementById("linkInput").value = url;
+          generateQR();
+        };
+        historyList.appendChild(li);
+      });
+    }
+
+    document.getElementById("downloadBtn").addEventListener("click", () => {
+      const canvas = document.querySelector("#qrcode canvas");
+      const image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+      const a = document.createElement("a");
+      a.href = image;
+      a.download = "qrcode.png";
+      a.click();
+    });
+
+    displayHistory();
+  </script>
+
+</body>
+</html>
